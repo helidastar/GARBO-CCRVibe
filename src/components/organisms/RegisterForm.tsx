@@ -26,13 +26,14 @@ export function RegisterForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "resident",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof RegisterSchema, string>>>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [awaitingEmail, setAwaitingEmail] = useState(false);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -197,6 +198,31 @@ export function RegisterForm() {
             showPasswordToggle
             aria-required="true"
           />
+        </FormGroup>
+
+        <FormGroup
+          label="Your Role"
+          htmlFor="role"
+          required
+          error={errors.role}
+        >
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            disabled={isLoading}
+            className={cn(
+              "input-field w-full h-[52px] px-4 rounded-xl bg-[var(--color-bg-page)] border border-[var(--color-border)]",
+              "text-[var(--color-text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent",
+              "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            )}
+            aria-required="true"
+          >
+            <option value="resident" className="bg-[var(--color-bg-card)] text-[var(--color-text-primary)]">Resident / Citizen</option>
+            <option value="collector" className="bg-[var(--color-bg-card)] text-[var(--color-text-primary)]">Garbage Collector (Driver/Crew)</option>
+            <option value="admin" className="bg-[var(--color-bg-card)] text-[var(--color-text-primary)]">Admin (Barangay Staff)</option>
+          </select>
         </FormGroup>
 
         {serverError && (

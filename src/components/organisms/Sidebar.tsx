@@ -71,43 +71,93 @@ export function Sidebar({ alertCount = 0 }: SidebarProps) {
 
       {/* ── Nav links ─────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col gap-0.5 px-2 overflow-y-auto">
-        {NAV_ITEMS.map((item) => (
-          <NavItem
-            key={item.href}
-            href={item.href}
-            label={item.label}
-            icon={item.icon as Parameters<typeof NavItem>[0]["icon"]}
-            badge={item.href === "/alerts" ? alertCount : undefined}
-            onClick={() => setMobileOpen(false)}
-          />
-        ))}
+        {(() => {
+          const userMetadataRole = user?.user_metadata?.role;
+          let role = "resident";
+
+          if (userMetadataRole === "admin") {
+            role = "admin";
+          } else if (userMetadataRole === "collector") {
+            role = "collector";
+          } else if (userMetadataRole === "resident") {
+            role = "resident";
+          } else {
+            const email = user?.email?.toLowerCase() || "";
+            if (email.includes("admin") || email.includes("staff")) {
+              role = "admin";
+            } else if (email.includes("collector") || email.includes("driver") || email.includes("crew")) {
+              role = "collector";
+            }
+          }
+
+          const filteredItems = NAV_ITEMS.filter((item) => {
+            if (role === "admin") return true; // Admin sees everything
+            if (role === "collector") {
+              // Collector sees Home, Announcements, Schedule
+              return ["/home", "/announcements", "/schedule"].includes(item.href);
+            }
+            // Resident sees Home, Announcements, Schedule
+            return ["/home", "/announcements", "/schedule"].includes(item.href);
+          });
+
+          return filteredItems.map((item) => (
+            <NavItem
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              icon={item.icon as Parameters<typeof NavItem>[0]["icon"]}
+              badge={item.href === "/alerts" ? alertCount : undefined}
+              onClick={() => setMobileOpen(false)}
+            />
+          ));
+        })()}
       </div>
 
       {/* ── User info + logout ────────────────────────────────────────── */}
       <div className="mt-auto px-2 pb-4 border-t border-[rgba(253,250,244,0.12)] pt-4">
         {/* User profile */}
-        {user && (
-          <div className="flex items-center gap-3 px-4 py-2.5 mb-1">
-            <div
-              className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
-                "bg-[var(--color-secondary)] text-[var(--color-text-on-primary)]",
-                "text-xs font-bold uppercase"
-              )}
-              aria-hidden="true"
-            >
-              {getInitials(user.email ?? "")}
+        {user && (() => {
+          const userMetadataRole = user?.user_metadata?.role;
+          let displayRole = "Resident / Citizen";
+
+          if (userMetadataRole === "admin") {
+            displayRole = "Barangay Admin";
+          } else if (userMetadataRole === "collector") {
+            displayRole = "Garbage Collector";
+          } else if (userMetadataRole === "resident") {
+            displayRole = "Resident / Citizen";
+          } else {
+            const email = user?.email?.toLowerCase() || "";
+            if (email.includes("admin") || email.includes("staff")) {
+              displayRole = "Barangay Admin";
+            } else if (email.includes("collector") || email.includes("driver") || email.includes("crew")) {
+              displayRole = "Garbage Collector";
+            }
+          }
+
+          return (
+            <div className="flex items-center gap-3 px-4 py-2.5 mb-1">
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+                  "bg-[var(--color-secondary)] text-[var(--color-text-on-primary)]",
+                  "text-xs font-bold uppercase"
+                )}
+                aria-hidden="true"
+              >
+                {getInitials(user.email ?? "")}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-[var(--color-text-on-primary)] truncate">
+                  {user.email}
+                </p>
+                <p className="text-[10px] text-[rgba(253,250,244,0.55)]">
+                  {displayRole}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-[var(--color-text-on-primary)] truncate">
-                {user.email}
-              </p>
-              <p className="text-[10px] text-[rgba(253,250,244,0.55)]">
-                Barangay Admin
-              </p>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Logout */}
         <LogoutNavItem onLogout={logout} />

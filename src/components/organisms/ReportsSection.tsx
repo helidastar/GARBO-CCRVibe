@@ -16,7 +16,6 @@ import {
 } from "recharts";
 import { Button }        from "@/components/atoms/Button";
 import { KpiCard }       from "@/components/molecules/KpiCard";
-import { StatusPill }    from "@/components/atoms/StatusPill";
 import { cn }            from "@/lib/utils/cn";
 import { exportMonthlyReportCSV, exportMonthlyReportPDF } from "@/lib/utils/export";
 import type { MonthlyReport } from "@/types/app.types";

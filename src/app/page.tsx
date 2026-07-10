@@ -16,26 +16,35 @@ export { metadata } from "./(public)/page";
 export default async function RootPage() {
   const cookieStore = await cookies();
 
-  // Secondary safety check in case middleware is bypassed
-  try {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-        },
-      }
-    );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const hasSupabase =
+    supabaseUrl &&
+    supabaseKey &&
+    supabaseUrl !== "https://your-project-ref.supabase.co";
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) redirect("/home");
-  } catch (error) {
-    // If Supabase isn't configured yet, we still show the landing page 
-    // so the UI can be previewed during development.
-    console.warn("Supabase check skipped in RootPage:", error);
+  // Secondary safety check in case middleware is bypassed
+  if (hasSupabase) {
+    try {
+      const supabase = createServerClient(
+        supabaseUrl,
+        supabaseKey,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll();
+            },
+          },
+        }
+      );
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) redirect("/home");
+    } catch (error) {
+      // If Supabase isn't configured yet, we still show the landing page 
+      // so the UI can be previewed during development.
+      console.warn("Supabase check skipped in RootPage:", error);
+    }
   }
 
   return <LandingPage />;

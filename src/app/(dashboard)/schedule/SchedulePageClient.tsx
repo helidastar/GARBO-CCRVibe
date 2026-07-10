@@ -16,8 +16,6 @@ import { ScheduleForm }     from "@/components/organisms/ScheduleForm";
 import { cn } from "@/lib/utils/cn";
 import type { ScheduleWithSitio } from "@/types/app.types";
 import type { SitioRow }          from "@/types/database.types";
-import { getSchedulesForMonth }   from "@/services/schedules.service";
-import { createSupabaseServerClientReadOnly } from "../../../../supabase/server";
 
 // Re-declare serialisable calendar shape (Maps can't cross RSC→Client boundary)
 type CalendarData = Record<

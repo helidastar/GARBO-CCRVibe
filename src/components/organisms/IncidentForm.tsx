@@ -8,7 +8,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, MapPin } from "lucide-react";
+import { X, MapPin, AlertCircle } from "lucide-react";
 import { Button }    from "@/components/atoms/Button";
 import { Input }     from "@/components/atoms/Input";
 import { FormGroup } from "@/components/molecules/FormGroup";
@@ -134,7 +134,12 @@ export function IncidentForm({ sitios, onClose, onSuccess }: IncidentFormProps) 
                   <option value="">Select a Sitio…</option>
                   {sitios.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
-                {errors.sitio_id && <p className="mt-1.5 text-xs text-[var(--color-danger)]" role="alert">⚠ {errors.sitio_id}</p>}
+                {errors.sitio_id && (
+                  <p className="mt-1.5 text-xs text-[var(--color-danger)] flex items-center gap-1" role="alert">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.sitio_id}</span>
+                  </p>
+                )}
               </FormGroup>
 
               {/* Reason tag */}
@@ -158,7 +163,12 @@ export function IncidentForm({ sitios, onClose, onSuccess }: IncidentFormProps) 
                     </button>
                   ))}
                 </div>
-                {errors.reason_tag && <p className="mt-1.5 text-xs text-[var(--color-danger)]" role="alert">⚠ {errors.reason_tag}</p>}
+                {errors.reason_tag && (
+                  <p className="mt-1.5 text-xs text-[var(--color-danger)] flex items-center gap-1" role="alert">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.reason_tag}</span>
+                  </p>
+                )}
               </div>
 
               {/* Incident date */}

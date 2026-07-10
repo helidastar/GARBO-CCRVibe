@@ -12,7 +12,6 @@ import type {
   SitioRow,
   OperationRow,
   IncidentRow,
-  AnnouncementRow,
 } from "./database.types";
 
 // Re-export enums for convenience

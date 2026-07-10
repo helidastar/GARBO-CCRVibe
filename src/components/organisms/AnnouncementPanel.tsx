@@ -13,7 +13,7 @@ import { Megaphone, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
 import { Badge }   from "@/components/atoms/Badge";
 import { cn }      from "@/lib/utils/cn";
 import { formatRelative } from "@/lib/utils/date";
-import type { AnnouncementRow, AnnouncementType } from "@/types/database.types";
+import type { AnnouncementRow } from "@/types/database.types";
 
 const TYPE_COLORS: Record<string, string> = {
   "Weather Delay": "warning",
@@ -58,7 +58,7 @@ export function AnnouncementPanel({ announcements, isLoading = false }: Announce
   if (announcements.length === 0) {
     return (
       <div className="empty-state py-16 w-full mx-auto flex flex-col items-center justify-center text-center">
-        <span className="empty-state__icon">📢</span>
+        <Megaphone className="w-12 h-12 text-[var(--color-text-muted)] mb-4 shrink-0" aria-hidden="true" />
         <p className="empty-state__title">No announcements yet</p>
         <p className="empty-state__desc">Create an announcement to notify residents of delays, schedule changes, or reminders.</p>
       </div>

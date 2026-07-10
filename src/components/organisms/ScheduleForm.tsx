@@ -10,7 +10,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { X, AlertCircle } from "lucide-react";
 import { Button }    from "@/components/atoms/Button";
 import { Input }     from "@/components/atoms/Input";
 import { Label }     from "@/components/atoms/Label";
@@ -205,8 +205,9 @@ export function ScheduleForm({
                   ))}
                 </select>
                 {errors.sitio_id && (
-                  <p className="mt-1.5 text-xs text-[var(--color-danger)]" role="alert">
-                    ⚠ {errors.sitio_id}
+                  <p className="mt-1.5 text-xs text-[var(--color-danger)] flex items-center gap-1" role="alert">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.sitio_id}</span>
                   </p>
                 )}
               </FormGroup>
@@ -255,8 +256,9 @@ export function ScheduleForm({
                   })}
                 </div>
                 {errors.collection_days && (
-                  <p className="mt-1.5 text-xs text-[var(--color-danger)]" role="alert">
-                    ⚠ {errors.collection_days}
+                  <p className="mt-1.5 text-xs text-[var(--color-danger)] flex items-center gap-1" role="alert">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.collection_days}</span>
                   </p>
                 )}
               </div>

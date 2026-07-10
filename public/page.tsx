@@ -15,7 +15,7 @@
 import type { Metadata } from "next";
 import Link   from "next/link";
 import Image  from "next/image";
-import { Trash2 } from "lucide-react";
+import { Trash2, Calendar, BarChart3, Megaphone, AlertTriangle, FolderOpen, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "GARBO — Manage Waste. Monitor Better. Serve Smarter.",
@@ -43,12 +43,12 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 // ─────────────────────────────────────────────────────────────────────────────
 function FeatureCard({
   icon, title, description,
-}: { icon: string; title: string; description: string }) {
+}: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div
       className="card p-6 flex flex-col gap-3 hover:-translate-y-1 transition-transform duration-200"
     >
-      <span className="text-3xl" aria-hidden="true">{icon}</span>
+      <div className="text-3xl text-[var(--color-primary)]" aria-hidden="true">{icon}</div>
       <h3
         className="text-base font-bold text-[var(--color-text-primary)]"
         style={{ fontFamily: "var(--font-heading)" }}
@@ -99,7 +99,6 @@ export default function LandingPage() {
 
           {/* Nav links — matches Image 1 */}
           <nav className="flex items-center gap-6" aria-label="Main">
-            <NavLink href="/login">LOG IN</NavLink>
             <NavLink href="#about">ABOUT US</NavLink>
             <NavLink href="/">HOME</NavLink>
           </nav>
@@ -237,32 +236,32 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <FeatureCard
-            icon="📅"
+            icon={<Calendar className="w-8 h-8" />}
             title="Schedule Management"
             description="Create and manage recurring collection routes per Sitio. Auto-generate daily task lists at midnight from the Master Schedule."
           />
           <FeatureCard
-            icon="📊"
+            icon={<BarChart3 className="w-8 h-8" />}
             title="Real-Time KPI Dashboard"
             description="Monitor daily completion rates, pending routes, and incident counts at a glance with a centralized operational overview."
           />
           <FeatureCard
-            icon="📢"
+            icon={<Megaphone className="w-8 h-8" />}
             title="Public Announcements"
             description="Generate public-ready announcement text for delays, cancellations, and reminders — ready to post on social media or notice boards."
           />
           <FeatureCard
-            icon="⚠️"
+            icon={<AlertTriangle className="w-8 h-8" />}
             title="Incident Logging"
             description="Record missed collections with reason tags, log illegal dumping reports with location descriptions, and filter logs by date or Sitio."
           />
           <FeatureCard
-            icon="📁"
+            icon={<FolderOpen className="w-8 h-8" />}
             title="Reports & Export"
             description="Export monthly performance reports as CSV or PDF. Track completion rates, waste volume, and fuel consumption month-over-month."
           />
           <FeatureCard
-            icon="🔒"
+            icon={<ShieldCheck className="w-8 h-8" />}
             title="Secure & Reliable"
             description="Row-level security restricts write access to authenticated Barangay Admins. 99.9% uptime via Vercel and Supabase cloud infrastructure."
           />

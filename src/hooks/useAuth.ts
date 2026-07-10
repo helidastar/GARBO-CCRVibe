@@ -18,7 +18,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import getSupabaseBrowserClient from "../../supabase/client";
-import type { LoginSchema, ResetPasswordSchema, UpdatePasswordSchema } from "@/lib/validations/auth.schema";
+import type { LoginSchema, ResetPasswordSchema, UpdatePasswordSchema, RegisterSchema } from "@/lib/validations/auth.schema";
 import type { LoadingState } from "@/types/app.types";
 
 interface AuthState {
@@ -29,6 +29,7 @@ interface AuthState {
 
 interface UseAuthReturn extends AuthState {
   login:          (data: LoginSchema)         => Promise<{ success: boolean; error?: string }>;
+  register:       (data: RegisterSchema & { role?: "admin" | "resident" | "collector" }) => Promise<{ success: boolean; error?: string; needsEmailConfirmation?: boolean }>;
   logout:         ()                          => Promise<void>;
   resetPassword:  (data: ResetPasswordSchema) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (data: UpdatePasswordSchema)=> Promise<{ success: boolean; error?: string }>;
@@ -84,6 +85,35 @@ export function useAuth(): UseAuthReturn {
 
       setState((prev) => ({ ...prev, loading: false }));
       return { success: true };
+    },
+    [supabase]
+  );
+
+  // ── Register ───────────────────────────────────────────────────────────────
+  const register = useCallback(
+    async (data: RegisterSchema & { role?: "admin" | "resident" | "collector" }): Promise<{ success: boolean; error?: string; needsEmailConfirmation?: boolean }> => {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+
+      const { data: authData, error } = await supabase.auth.signUp({
+        email:    data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: data.fullName || "",
+            role:      data.role || "resident",
+          },
+        },
+      });
+
+      if (error) {
+        const message = mapAuthError(error.message);
+        setState((prev) => ({ ...prev, loading: false, error: message }));
+        return { success: false, error: message };
+      }
+
+      setState((prev) => ({ ...prev, loading: false }));
+      const needsEmailConfirmation = !authData.session;
+      return { success: true, needsEmailConfirmation };
     },
     [supabase]
   );
@@ -147,6 +177,7 @@ export function useAuth(): UseAuthReturn {
   return {
     ...state,
     login,
+    register,
     logout,
     resetPassword,
     updatePassword,
