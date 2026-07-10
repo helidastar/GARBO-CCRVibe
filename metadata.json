@@ -1,0 +1,8 @@
+{
+  "name": "Remix: GARBO-CCRVibe",
+  "description": "Imported from GitHub: helidastar/GARBO-CCRVibe",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

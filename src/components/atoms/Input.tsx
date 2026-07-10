@@ -8,7 +8,7 @@
  */
 
 import { forwardRef, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -119,9 +119,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <p
             id={`${props.id ?? props.name}-error`}
             role="alert"
-            className="mt-1.5 text-xs text-[var(--color-danger)] flex items-center gap-1"
+            className="mt-1.5 text-xs text-[var(--color-danger)] flex items-center gap-1.5"
           >
-            <span aria-hidden="true">⚠</span>
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}

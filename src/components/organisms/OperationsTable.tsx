@@ -13,8 +13,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, RefreshCw } from "lucide-react";
-import { StatusPill, StatusSelect } from "@/components/atoms/StatusPill";
+import { Pencil } from "lucide-react";
+import { StatusSelect } from "@/components/atoms/StatusPill";
 import { Button }                   from "@/components/atoms/Button";
 import { OperationsFilterBar }      from "@/components/molecules/FilterBar";
 import { ResourceUpdateForm }       from "@/components/organisms/ResourceUpdateForm";
@@ -138,7 +138,11 @@ export function OperationsTable({
   function toggleSelect(id: string) {
     setSelected((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   }

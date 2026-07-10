@@ -8,9 +8,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, AlertTriangle, Waves, Truck, HelpCircle } from "lucide-react";
+import { Trash2, AlertTriangle, Waves, Truck, HelpCircle, CheckCircle2 } from "lucide-react";
 import { Badge }                from "@/components/atoms/Badge";
-import { Button }               from "@/components/atoms/Button";
 import { IncidentsFilterBar }   from "@/components/molecules/FilterBar";
 import { cn }                   from "@/lib/utils/cn";
 import { formatDateShort, formatRelative } from "@/lib/utils/date";
@@ -87,8 +86,8 @@ export function IncidentLogTable({ incidents, sitios, isLoading = false }: Incid
       )}
 
       {visible.length === 0 ? (
-        <div className="empty-state py-16">
-          <span className="empty-state__icon">✅</span>
+        <div className="empty-state py-16 flex flex-col items-center justify-center text-center">
+          <CheckCircle2 className="w-12 h-12 text-[var(--color-success)] mb-4 shrink-0" aria-hidden="true" />
           <p className="empty-state__title">
             {incidents.length === 0 ? "No incidents logged" : "No incidents match filters"}
           </p>

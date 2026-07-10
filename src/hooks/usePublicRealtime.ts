@@ -3,8 +3,14 @@
 import { useEffect, useState } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
-export const usePublicRealtime = (initialData: any[]) => {
-  const [data, setData] = useState(initialData);
+interface RealtimeItem {
+  id: string;
+  type?: string;
+  [key: string]: unknown;
+}
+
+export const usePublicRealtime = (initialData: RealtimeItem[]) => {
+  const [data, setData] = useState<RealtimeItem[]>(initialData);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -16,7 +22,7 @@ export const usePublicRealtime = (initialData: any[]) => {
 
         setData((currentData) => {
           // Normalize the incoming row so the UI knows how to filter it
-          let processedItem = newItem ? { ...newItem } : null;
+          const processedItem = newItem ? { ...newItem } as RealtimeItem : null;
           
           if (processedItem) {
             if (table === 'daily_operations') processedItem.type = 'live_op';

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { RegisterForm } from "@/components/organisms/RegisterForm";
+import { Calendar, BarChart3, Megaphone, FolderOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Create account",
@@ -54,17 +55,17 @@ export default function RegisterPage() {
 
         <div className="space-y-3 w-full max-w-xs">
           {[
-            { icon: "📅", text: "Schedule & track daily collections" },
-            { icon: "📊", text: "Monitor KPIs in real time" },
-            { icon: "📢", text: "Generate public announcements" },
-            { icon: "📁", text: "Export monthly reports (CSV / PDF)" },
-          ].map(({ icon, text }) => (
+            { Icon: Calendar, text: "Schedule & track daily collections" },
+            { Icon: BarChart3, text: "Monitor KPIs in real time" },
+            { Icon: Megaphone, text: "Generate public announcements" },
+            { Icon: FolderOpen, text: "Export monthly reports (CSV / PDF)" },
+          ].map(({ Icon, text }) => (
             <div
               key={text}
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-left"
               style={{ background: "rgba(253,250,244,0.08)" }}
             >
-              <span className="text-lg">{icon}</span>
+              <Icon className="w-5 h-5 text-[var(--color-accent)] shrink-0" aria-hidden="true" />
               <span className="text-sm text-[rgba(253,250,244,0.85)]">{text}</span>
             </div>
           ))}

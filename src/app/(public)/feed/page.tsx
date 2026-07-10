@@ -2,12 +2,27 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePublicRealtime } from '@/hooks/usePublicRealtime';
 import { 
   Search, Calendar as CalendarIcon, ArrowUpRight, Megaphone, 
   AlertTriangle, Trash2, RefreshCw, Leaf, ArrowLeft, 
-  TrendingUp, Truck, CheckCircle, Clock, MapPin, Activity, Zap
+  TrendingUp, Truck, Clock, MapPin, Activity, Zap
 } from 'lucide-react';
+
+interface FeedItem {
+  id: string;
+  type: string;
+  created_at?: string;
+  incident_date?: string;
+  route_name?: string;
+  title?: string;
+  content?: string;
+  value?: number;
+  trend_percentage?: number;
+  description?: string;
+  collection_days?: string[];
+}
 
 /**
  * Navigation Link Component
@@ -23,7 +38,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
-export default function PublicFeedPage({ initialData }: { initialData: any[] }) {
+export default function PublicFeedPage({ initialData }: { initialData: FeedItem[] }) {
   // 1. REAL-TIME DATA CONNECTION
   // Connects to Supabase real-time stream for Barangay Banilad
   const { data } = usePublicRealtime(initialData);
@@ -37,30 +52,28 @@ export default function PublicFeedPage({ initialData }: { initialData: any[] }) 
   const liveOps = useMemo(() => data?.filter(item => item.type === 'live_op') || [], [data]);
 
   /**
- * 3. ENVIRONMENTAL IMPACT METER (Admin Connected)
- * Pulls data from 'environmental_report' or 'report' types submitted in admin dashboard
- */
-const environmentalImpact = useMemo(() => {
-  // Find the most recent report entry from the real-time data stream
-  const report = data?.find(item => item.type === 'environmental_report' || item.type === 'report');
+   * 3. ENVIRONMENTAL IMPACT METER (Admin Connected)
+   * Pulls data from 'environmental_report' or 'report' types submitted in admin dashboard
+   */
+  const environmentalImpact = useMemo(() => {
+    // Find the most recent report entry from the real-time data stream
+    const report = data?.find(item => item.type === 'environmental_report' || item.type === 'report');
 
-  // Fallback values if no admin report is found
-  if (!report) {
-    return { 
-      value: 84, 
-      label: "Total Waste Diverted from landfills this month.", 
-      trend: 12 
+    // Fallback values if no admin report is found
+    if (!report) {
+      return { 
+        value: 84, 
+        label: "Total Waste Diverted from landfills this month.", 
+        trend: 12 
+      };
+    }
+
+    return {
+      value: report.value || 0, // The percentage number
+      label: report.content || "Waste Diverted from landfills this month.", // The description
+      trend: report.trend_percentage || null // The improvement percentage
     };
-  }
-
-  return {
-    value: report.value || 0, // The percentage number
-    label: report.content || "Waste Diverted from landfills this month.", // The description
-    trend: report.trend_percentage || null // The improvement percentage
-  };
-}, [data]);
-
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [data]);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "var(--color-bg-page)" }}>
@@ -77,8 +90,6 @@ const environmentalImpact = useMemo(() => {
             <NavLink href="/">HOME</NavLink>
             <NavLink href="/#about">ABOUT US</NavLink>
             <NavLink href="/feed">FEED</NavLink>
-            <NavLink href="/register">SIGN UP</NavLink>
-            <NavLink href="/login">LOG IN</NavLink>
           </nav>
         </div>
       </header>
@@ -118,10 +129,12 @@ const environmentalImpact = useMemo(() => {
                   </div>
                 </div>
                 <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl min-h-[350px]">
-                   <img 
-                    src="https://i.pinimg.com/736x/60/e7/2c/60e72c4e8c3e5ada13b1bbd1085bf147.jpg" 
+                   <Image 
+                    src="https://picsum.photos/seed/sustainable_living/1200/800" 
                     alt="Sustainable Living" 
+                    fill
                     className="absolute inset-0 w-full h-full object-cover" 
+                    referrerPolicy="no-referrer"
                    />
                 </div>
               </header>
@@ -134,7 +147,7 @@ const environmentalImpact = useMemo(() => {
                   <div className="flex justify-between items-start mb-8">
                     <div>
                       <span className="text-[10px] font-black text-[#4a5d23]/60 uppercase tracking-widest">Schedule</span>
-                      <h2 className="text-3xl font-serif font-bold text-[#4a5d23]">This Week's Pickup</h2>
+                      <h2 className="text-3xl font-serif font-bold text-[#4a5d23]">This Week&apos;s Pickup</h2>
                     </div>
                     <button onClick={() => setActiveView('calendar')} className="flex items-center gap-2 text-[#4a5d23] font-bold text-[10px] hover:underline uppercase">
                       View Calendar <CalendarIcon size={14} />

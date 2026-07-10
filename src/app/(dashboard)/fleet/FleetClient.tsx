@@ -15,26 +15,22 @@ import {
   Fuel,
   Leaf,
   Wrench,
-  MapPin,
   Activity,
   AlertTriangle,
-  CheckCircle2,
-  Clock,
-  Edit2,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
-import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
-import type { OperationWithDetails } from "@/types/app.types";
+import type { OperationWithDetails, IncidentWithSitio } from "@/types/app.types";
+import type { SitioRow } from "@/types/database.types";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 interface FleetClientProps {
   operations: OperationWithDetails[];
-  incidents:  any[];
-  sitios:     any[];
+  incidents:  IncidentWithSitio[];
+  sitios:     SitioRow[];
 }
 
 interface VehicleEntry {
@@ -59,13 +55,13 @@ const STATUS_CYCLE: VehicleEntry["status"][] = [
   "active", "in-transit", "idle", "maintenance",
 ];
 
-function buildFleet(sitios: any[], operations: OperationWithDetails[]): VehicleEntry[] {
+function buildFleet(sitios: SitioRow[], operations: OperationWithDetails[]): VehicleEntry[] {
   // Build one truck per sitio (up to 8 trucks shown)
   const trucks = sitios.slice(0, 8).map((sitio, i) => {
     const statusIdx = i % STATUS_CYCLE.length;
     const status    = STATUS_CYCLE[statusIdx]!;
     const hasOps    = operations.some(
-      (op) => (op as any).sitio?.id === sitio.id
+      (op) => op.sitio?.id === sitio.id
     );
 
     return {
@@ -229,7 +225,7 @@ function DonutChart({ pct }: { pct: number }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // FleetClient
 // ─────────────────────────────────────────────────────────────────────────────
-export function FleetClient({ operations, incidents, sitios }: FleetClientProps) {
+export function FleetClient({ operations, incidents: _incidents, sitios }: FleetClientProps) {
   const fleet = useMemo(() => buildFleet(sitios, operations), [sitios, operations]);
   const [selectedTruck, setSelectedTruck] = useState<string | null>(fleet[0]?.id ?? null);
   const [filterTab, setFilterTab] = useState<"all" | "active" | "idle" | "maint">("all");
@@ -246,10 +242,13 @@ export function FleetClient({ operations, incidents, sitios }: FleetClientProps)
     const ts = new Date(op.created_at ?? Date.now()).toLocaleTimeString("en-PH", {
       hour: "2-digit", minute: "2-digit",
     });
+    const opDetails = op as unknown as { truck_id?: string };
+    const truckLabel = opDetails.truck_id ?? fleet[i % fleet.length]?.label ?? "TRUCK-X";
+    const sitioName = op.sitio?.name ?? "Sector " + (i + 1);
     return {
       id:   op.id ?? i,
       time: ts,
-      text: `${(op as any).truck_id ?? fleet[i % fleet.length]?.label ?? "TRUCK-X"} completed route ${(op as any).sitio?.name ?? "Sector " + (i + 1)} · Total load ${(12 + i * 3).toFixed(1)} t.`,
+      text: `${truckLabel} completed route ${sitioName} · Total load ${(12 + i * 3).toFixed(1)} t.`,
       type: i === 1 ? "warning" : "info",
     };
   });
@@ -384,7 +383,7 @@ export function FleetClient({ operations, incidents, sitios }: FleetClientProps)
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-[var(--color-text-primary)]">
-                  {operations.filter((o) => (o as any).status === "completed").length || 18}
+                  {operations.filter((o) => o.status === "completed").length || 18}
                 </p>
                 <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wide mt-0.5">Routes Today</p>
               </div>

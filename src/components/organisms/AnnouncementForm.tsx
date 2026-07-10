@@ -9,7 +9,7 @@
 
 import { useState }  from "react";
 import { useRouter } from "next/navigation";
-import { X, Copy, CheckCheck } from "lucide-react";
+import { X, Copy, CheckCheck, CloudRain, Bell, Megaphone, XCircle, HelpCircle, AlertCircle } from "lucide-react";
 import { Button }    from "@/components/atoms/Button";
 import { Input }     from "@/components/atoms/Input";
 import { FormGroup } from "@/components/molecules/FormGroup";
@@ -20,12 +20,20 @@ const ANNOUNCEMENT_TYPES: AnnouncementType[] = [
   "Weather Delay", "Reminder", "Notice", "Cancellation", "Other",
 ];
 
-const TYPE_EMOJI: Record<AnnouncementType, string> = {
-  "Weather Delay": "🌧️",
-  "Reminder":      "📌",
-  "Notice":        "📢",
-  "Cancellation":  "❌",
-  "Other":         "ℹ️",
+const TYPE_ICON: Record<AnnouncementType, React.ComponentType<{ className?: string }>> = {
+  "Weather Delay": CloudRain,
+  "Reminder":      Bell,
+  "Notice":        Megaphone,
+  "Cancellation":  XCircle,
+  "Other":         HelpCircle,
+};
+
+const TYPE_TEXT_ICON: Record<AnnouncementType, string> = {
+  "Weather Delay": "[WEATHER]",
+  "Reminder":      "[REMINDER]",
+  "Notice":        "[NOTICE]",
+  "Cancellation":  "[CANCELLATION]",
+  "Other":         "[ANNOUNCEMENT]",
 };
 
 interface AnnouncementFormProps {
@@ -47,7 +55,7 @@ export function AnnouncementForm({ onClose, onSuccess }: AnnouncementFormProps) 
 
   // Live public-text preview
   const publicText = [
-    `${TYPE_EMOJI[type]} GARBO — Barangay Banilad`,
+    `${TYPE_TEXT_ICON[type]} GARBO — Barangay Banilad`,
     ``,
     `[${type.toUpperCase()}]`,
     title ? title : "(Title here)",
@@ -117,22 +125,26 @@ export function AnnouncementForm({ onClose, onSuccess }: AnnouncementFormProps) 
               <div>
                 <p className="form-label mb-2">Announcement Type</p>
                 <div className="flex flex-wrap gap-2">
-                  {ANNOUNCEMENT_TYPES.map((t) => (
-                    <button
-                      key={t} type="button"
-                      onClick={() => setType(t)}
-                      className={cn(
-                        "px-3 py-1.5 rounded-md text-sm font-medium border transition-all",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-border-focus)]",
-                        type === t
-                          ? "bg-[var(--color-primary)] text-[var(--color-text-on-primary)] border-[var(--color-primary)]"
-                          : "border-[var(--color-border)] hover:border-[var(--color-primary)] text-[var(--color-text-secondary)]"
-                      )}
-                      aria-pressed={type === t}
-                    >
-                      {TYPE_EMOJI[t]} {t}
-                    </button>
-                  ))}
+                  {ANNOUNCEMENT_TYPES.map((t) => {
+                    const IconComp = TYPE_ICON[t];
+                    return (
+                      <button
+                        key={t} type="button"
+                        onClick={() => setType(t)}
+                        className={cn(
+                          "px-3 py-1.5 rounded-md text-sm font-medium border transition-all flex items-center gap-1.5",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-border-focus)]",
+                          type === t
+                            ? "bg-[var(--color-primary)] text-[var(--color-text-on-primary)] border-[var(--color-primary)]"
+                            : "border-[var(--color-border)] hover:border-[var(--color-primary)] text-[var(--color-text-secondary)]"
+                        )}
+                        aria-pressed={type === t}
+                      >
+                        <IconComp className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span>{t}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -162,7 +174,12 @@ export function AnnouncementForm({ onClose, onSuccess }: AnnouncementFormProps) 
                   />
                 </div>
                 <p className="mt-1 text-[10px] text-[var(--color-text-muted)] text-right">{body.length}/2000</p>
-                {errors.body && <p className="text-xs text-[var(--color-danger)]" role="alert">⚠ {errors.body}</p>}
+                {errors.body && (
+                  <p className="text-xs text-[var(--color-danger)] flex items-center gap-1 mt-1.5" role="alert">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.body}</span>
+                  </p>
+                )}
               </FormGroup>
 
               {/* Active toggle */}

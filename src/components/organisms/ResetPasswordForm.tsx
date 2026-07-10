@@ -13,7 +13,6 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   resetPasswordSchema,
   updatePasswordSchema,
-  type ResetPasswordSchema,
   type UpdatePasswordSchema,
 } from "@/lib/validations/auth.schema";
 import { Button }    from "@/components/atoms/Button";

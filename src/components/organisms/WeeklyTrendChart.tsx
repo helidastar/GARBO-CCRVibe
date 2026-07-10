@@ -38,7 +38,7 @@ function formatChartDate(isoDate: string): string {
 function CustomTooltip({
   active,
   payload,
-  label,
+  label: _label,
 }: {
   active?:  boolean;
   payload?: { value: number; payload: DailyTrend }[];

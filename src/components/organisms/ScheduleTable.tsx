@@ -9,7 +9,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { Pencil, Trash2, MoreHorizontal, Calendar } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import { ScheduleForm } from "@/components/organisms/ScheduleForm";
@@ -207,8 +207,8 @@ export function ScheduleTable({ schedules, sitios, isLoading = false }: Schedule
 
       {/* Table */}
       {visible.length === 0 ? (
-        <div className="empty-state py-16">
-          <span className="empty-state__icon">📅</span>
+        <div className="empty-state py-16 flex flex-col items-center justify-center text-center">
+          <Calendar className="w-12 h-12 text-[var(--color-text-muted)] mb-4 shrink-0" aria-hidden="true" />
           <p className="empty-state__title">No schedules found</p>
           <p className="empty-state__desc">
             {schedules.length === 0

@@ -10,8 +10,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
-import { StatusPill, StatusSelect } from "@/components/atoms/StatusPill";
+import { Calendar } from "lucide-react";
+import { StatusSelect } from "@/components/atoms/StatusPill";
 import { cn } from "@/lib/utils/cn";
 import type { TodayRoute } from "@/services/dashboard.service";
 import type { OperationStatus } from "@/types/app.types";
@@ -53,8 +53,8 @@ export function TodayRoutesTable({ routes, isLoading = false }: TodayRoutesTable
 
   if (routes.length === 0) {
     return (
-      <div className="empty-state py-10">
-        <span className="empty-state__icon">📅</span>
+      <div className="empty-state py-10 flex flex-col items-center justify-center text-center">
+        <Calendar className="w-12 h-12 text-[var(--color-text-muted)] mb-4 shrink-0" aria-hidden="true" />
         <p className="empty-state__title">No routes scheduled today</p>
         <p className="empty-state__desc">
           Routes are auto-generated at midnight from the Master Schedule.
